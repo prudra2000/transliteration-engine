@@ -15,6 +15,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "prepare": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "tsx src/index.ts"
