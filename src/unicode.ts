@@ -5,6 +5,8 @@ export const VISARGA = 'ઃ'
 export const NUKTA = '઼'
 export const AVAGRAHA = 'ઽ'
 export const DANDA = '।'
+export const DOUBLE_DANDA = '॥'
+export const OM = 'ૐ'
 
 // Inherent vowel codepoint (અ)
 export const INHERENT_VOWEL_CP = 'અ'

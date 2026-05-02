@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { toRoman, toGujarati } from '../src/index.js'
+import { toRoman, toGujarati, transliterate } from '../src/index.js'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -196,7 +196,8 @@ describe('Round-trip: toGujarati(toRoman(x)) === x', () => {
     'કઃ',          // ka + visarga
     'કાં',         // kā + anusvara
     'ભ',           // bha
-    'ૐ',           // not in our set, should pass through
+    // OM (ૐ) is NOT round-trippable: ૐ → 'om' → ઓ+મ because 'om' is
+    // indistinguishable from a normal o+m syllable sequence in reverse.
     '૧૨૩',         // numerals
   ]
 
@@ -259,5 +260,62 @@ describe('toGujarati – ISO 15919 spot checks', () => {
   it('conjunct', () => {
     expect(toGujarati('kta', 'iso15919')).toBe('ક્ત')
     expect(toGujarati('tra', 'iso15919')).toBe('ત્ર')
+  })
+})
+
+// ── Punctuation ───────────────────────────────────────────────────────────────
+
+describe('Punctuation handling', () => {
+  it('danda → .', () => {
+    expect(toRoman('।', 'ascii')).toBe('.')
+  })
+
+  it('double danda → ..', () => {
+    expect(toRoman('॥', 'ascii')).toBe('..')
+  })
+
+  it('OM symbol → om', () => {
+    expect(toRoman('ૐ', 'ascii')).toBe('om')
+    expect(toRoman('ૐ', 'iso15919')).toBe('om')
+  })
+
+  it('avagraha → apostrophe', () => {
+    expect(toRoman('ઽ', 'ascii')).toBe("'")
+    expect(toRoman('ઽ', 'iso15919')).toBe("'")
+  })
+
+  it('standard Latin punctuation passes through unchanged', () => {
+    const punct = ',.!?;:\'"()-—[]'
+    expect(toRoman(punct, 'ascii')).toBe(punct)
+    expect(toRoman(punct, 'iso15919')).toBe(punct)
+  })
+
+  it('mixed Gujarati and Latin punctuation', () => {
+    expect(toRoman('ભારત, ગુજરાત!', 'ascii')).toBe('bhaarata, gujaraata!')
+  })
+})
+
+// ── Auto-capitalize ───────────────────────────────────────────────────────────
+
+describe('capitalize option', () => {
+  it('capitalizes the first letter', () => {
+    expect(toRoman('ગ', 'ascii', { capitalize: true })).toBe('Ga')
+    expect(toRoman('ભારત', 'ascii', { capitalize: true })).toBe('Bhaarata')
+  })
+
+  it('capitalizes after . ! ?', () => {
+    const input = 'ભારત। ગુજરાત'
+    const result = toRoman(input, 'ascii', { capitalize: true })
+    expect(result).toBe('Bhaarata. Gujaraata')
+  })
+
+  it('does not capitalize when option is false (default)', () => {
+    expect(toRoman('ભારત', 'ascii')).toBe('bhaarata')
+  })
+
+  it('works via transliterate()', () => {
+    expect(
+      transliterate('ભારત', { scheme: 'ascii', capitalize: true }),
+    ).toBe('Bhaarata')
   })
 })
