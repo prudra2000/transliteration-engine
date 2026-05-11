@@ -1,0 +1,1 @@
+{"version":3,"file":"toRoman.d.ts","sourceRoot":"","sources":["../../src/engine/toRoman.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,qBAAqB,CAAA;AAepD,MAAM,WAAW,cAAc;IAC7B,UAAU,CAAC,EAAE,OAAO,CAAA;CACrB;AAUD,wBAAgB,OAAO,CACrB,IAAI,EAAE,MAAM,EACZ,MAAM,EAAE,SAAS,EACjB,OAAO,GAAE,cAAmB,GAC3B,MAAM,CA2DR"}
